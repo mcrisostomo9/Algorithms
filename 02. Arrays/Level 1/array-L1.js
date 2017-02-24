@@ -1,52 +1,52 @@
 
 
-        // Ignore this function
+// Ignore this function
+//
+if(!Array.prototype.equals) {
+
+  // attach the .equals method to Array's prototype to call it on any array
+  //
+  Array.prototype.equals = function (array) {
+
+    // if the other array is a falsy value, return
+    //
+    if (!array) {
+      return false;
+    }
+
+    // compare lengths - can save a lot of time
+    //
+    if (this.length != array.length) {
+      return false;
+    }
+
+    for (var i = 0, l = this.length; i < l; i++) {
+
+      // Check if we have nested arrays
+      //
+      if (this[i] instanceof Array && array[i] instanceof Array) {
+
+        // recurse into the nested arrays
         //
-        if(!Array.prototype.equals) {
-
-          // attach the .equals method to Array's prototype to call it on any array
-          //
-          Array.prototype.equals = function (array) {
-
-            // if the other array is a falsy value, return
-            //
-            if (!array) {
-              return false;
-            }
-
-            // compare lengths - can save a lot of time
-            //
-            if (this.length != array.length) {
-              return false;
-            }
-
-            for (var i = 0, l = this.length; i < l; i++) {
-
-              // Check if we have nested arrays
-              //
-              if (this[i] instanceof Array && array[i] instanceof Array) {
-
-                // recurse into the nested arrays
-                //
-                if (!this[i].equals(array[i])) {
-                  return false;
-                }
-              }
-              else if (this[i] != array[i]) {
-                // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                //
-                return false;
-              }
-            }
-            return true;
-          };
-
-          // Hide method from for-in loops
-          //
-          Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+        if (!this[i].equals(array[i])) {
+          return false;
         }
+      }
+      else if (this[i] != array[i]) {
+        // Warning - two different object instances will never be equal: {x:20} != {x:20}
         //
-        // Ignore that function
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // Hide method from for-in loops
+  //
+  Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+}
+//
+// Ignore that function
 
 
 // Arrays are efficient for random access.  They are also the most common data structure,
@@ -62,8 +62,6 @@
 // [ ] Return index of nth last odd in any array, 1 being the fist, etc., null = not found
 //    [ ] Use only a single iteration
 // [ ] Select a range of values in any array, return the average of the values of the range
-// [ ] Copy contents of one array to another.  Do not use any built-in functions.
-// [ ] Swap two elements in an array.  Return the same array passed in.  Do not use any built-in functions.
 //
 
 
@@ -75,6 +73,15 @@ var z = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function fillArray(a, value) {
   // fill it
+  let newArr = [];
+  for (i = 0; i < a.length; i++){
+    if(value == undefined){
+      newArr.push(0);
+    }else{
+    newArr.push(value);
+    }
+  }
+  return newArr
 }
 
 console.log("zero(z): " + (fillArray(z).equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])));
@@ -87,6 +94,11 @@ var a = [1, 2, 3, 4, 5, 6, 7, 8];
 
 function sum(a) {
   // Return sum
+  let result = 0;
+  for(i = 0; i < a.length; i++){
+    result += a[i];
+  }
+  return result
 }
 
 console.log("sum(a): " + (sum(a) === 36));
@@ -97,6 +109,13 @@ var a1 = [23, 17, 23, 42, 8, 2, 73, 101, 83, 92];
 
 function average(a) {
   // return average
+  let result= 0;
+  let avg = 0;
+  for(i = 0; i < a.length; i++){
+    result += a[i];
+  }
+  avg = result/a.length;
+  return avg
 }
 
 console.log("average(a1): " + (average(a1) === 46.4));
@@ -106,9 +125,16 @@ console.log("average(a1): " + (average(a1) === 46.4));
 //
 var a2 = [1,2,4,4,6,7,8,9,12];
 var a3 = [4,5,9,10,11,15,22,20,21,21];
-
+var a4 = [10, 10, 20, 20]
 function median(a) {
   // return median
+  let med = 0;
+  if(a.length % 2 != 0){
+    med = a[(a.length/2)-.5]
+  }else{
+    med = (a[(a.length/2)] + a[(a.length/2) -1])/2
+  }
+return med
 }
 
 console.log("median(a2): " + (median(a2) === 6));
@@ -121,6 +147,13 @@ var a4 = ["zero", "one", "two", "three", "four", "five"];
 
 function findIndex(a, value) {
   // return index or null
+  var index = null;
+  for(i = 0; i < a.length; i++){
+    if(value == a[i]){
+      index = i;
+    }
+  }
+  return index
 }
 
 console.log("findIndex('three'): " + (findIndex(a4, "three") === 3));
@@ -131,8 +164,33 @@ console.log("findIndex('three'): " + (findIndex(a4, "three") === 3));
 var a5 = [4, 3, 8, 8, 6, 9, 10, 12, 10, 9, 0, 5, 16, 2];
 
 function findNthLastOdd(a, n) {
-  // return nth last add
+  // return nth last odd
+  //
+  counter =1;
+  for (i = a.length-1; i > 0; i--){
+    if(a[i] % 2 != 0 && counter!= n){
+      counter++;
+    }else if (a[i] % 2 != 0 && counter==n) {
+      return i
+    }
+  }
+  return null
 }
+  // Dans function
+// function findNthLastOdd(a, n){
+//     var oddCount = 0;
+//     var index = a.length-1;
+//     while(index>=0){
+//         if (a[index]%2 ===1){
+//             oddCount++;
+//             if(oddCount===n){
+//                 return index;
+//             }
+//         }
+//         index--;
+//     }
+// return null;
+// }
 
 console.log("findNthLastOdd(a5, 1): " + (findNthLastOdd(a5, 1) === 11));
 console.log("findNthLastOdd(a5, 2): " + (findNthLastOdd(a5, 2) === 9));
@@ -145,31 +203,14 @@ var a6 = [0, 1, 2, 3, 4, 5, 10, 15, 23, 54, 22, 1, 8, 4, 2, 2, 2, 0, 1];
 
 function getAverageOfRange(a, start, end) {
   // return average of values selected from a subarray
+  var sumRange = null;
+  var result = null;
+  for (i = start; i <= end; i++){
+    sumRange += a[i];
+  }
+  result = sumRange/(end-start +1);
+  return result
+
 }
 
 console.log("getAverageOfRange(a6, 5, 9): " + (getAverageOfRange(a6, 5, 9) === 21.4));
-
-
-// [ ] Copy contents of one array to another.  Do not use any built-in functions.
-//
-var a7 = [0, 10, 20, 30, 35, 55, 75, 100];
-var b7 = [];
-
-function copyArray(source, target) {
-  // return copy
-}
-
-console.log("copyArray(a7, b7): " + (a7.equals(b7)));
-
-
-
-// [ ] Swap two elements in an array.  Return the same array passed in.  Do not use any built-in functions.
-//
-var a8 = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
-
-function swap(a, indexSource, indexTarget) {
-  // swap 'em
-}
-
-console.log("swap(a8, 1, 11): " + (swap(a8, 1, 11).equals([1, 31, 3, 5, 7, 11, 13, 17, 19, 23, 29, 2, 37])));
-
